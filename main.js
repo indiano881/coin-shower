@@ -8,7 +8,7 @@ const COINS_ANIMATION_CONFIG = {
 	startY: 225,
 };
 class ParticleSystem extends PIXI.Container {
-	//config = {} COMMENT
+	//config = {} works has a fallback in case COINS_ANIMATION_CONFIG is missing
 	constructor(config = {}) {
 		super();
 
