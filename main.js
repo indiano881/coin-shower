@@ -1,11 +1,36 @@
 // ----- Start of the assigment ----- //
 
+//main variables that effects coins animation, such as amount, gravity, elkasticity and so on
+const COINS_ANIMATION_CONFIG = {
+	numCoins: 15,
+	duration: 1000,
+	startX: 400,
+	startY: 225,
+};
 class ParticleSystem extends PIXI.Container {
-	constructor() {
+	//config = {} COMMENT
+	constructor(config = {}) {
 		super();
+
+		//COMMENTS
+		const { numCoins, duration, startX, startY } = {
+			...COINS_ANIMATION_CONFIG,
+			...config
+		};
 		// Set start and duration for this effect in milliseconds
 		this.start    = 0;
-		this.duration = 500;
+		this.duration = duration;
+
+		this.coins= [];
+
+
+	for (let i = 0; i < numCoins; i++) {
+		// Create a sprite
+		let sp        = game.sprite("CoinsGold000");
+		// Set pivot to center of said sprite
+		sp.pivot.x    = sp.width/2;
+		sp.pivot.y    = sp.height/2;
+	}
 		// Create a sprite
 		let sp        = game.sprite("CoinsGold000");
 		// Set pivot to center of said sprite
@@ -28,11 +53,11 @@ class ParticleSystem extends PIXI.Container {
 		game.setTexture(this.sp,"CoinsGold"+num);
 		// Animate position
 		this.sp.x = 400 + nt*400;
-		this.sp.y = 225 + nt*225;
+		this.sp.y = 225 + Math.sin(-nt * Math.PI) * 200
 		// Animate scale
 		this.sp.scale.x = this.sp.scale.y = nt;
 		// Animate alpha
-		this.sp.alpha = nt;
+		this.sp.alpha = 1;
 		// Animate rotation
 		this.sp.rotation = nt*Math.PI*2;
 	}
