@@ -8,14 +8,12 @@ const COINS_ANIMATION_CONFIG = {
 	startY: 225,
 };
 class ParticleSystem extends PIXI.Container {
-	//config = {} works has a fallback in case COINS_ANIMATION_CONFIG is missing
-	constructor(config = {}) {
+	constructor() {
 		super();
 
 		//COMMENTS
-		const { numCoins, duration, startX, startY } = {
-			...COINS_ANIMATION_CONFIG,
-			...config
+		const { numCoins, duration} = {
+			...COINS_ANIMATION_CONFIG
 		};
 		// Set start and duration for this effect in milliseconds
 		this.start    = 0;
@@ -30,16 +28,11 @@ class ParticleSystem extends PIXI.Container {
 		// Set pivot to center of said sprite
 		sp.pivot.x    = sp.width/2;
 		sp.pivot.y    = sp.height/2;
+
+		this.coins.push(sp);
+			this.addChild(sp);
 	}
-		// Create a sprite
-		let sp        = game.sprite("CoinsGold000");
-		// Set pivot to center of said sprite
-		sp.pivot.x    = sp.width/2;
-		sp.pivot.y    = sp.height/2;
-		// Add the sprite particle to our particle effect
-		this.addChild(sp);
-		// Save a reference to the sprite particle
-		this.sp = sp;
+		
 	}
 	animTick(nt,lt,gt) {
 		// Every update we get three different time variables: nt, lt and gt.

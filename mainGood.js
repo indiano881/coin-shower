@@ -5,6 +5,7 @@ const COINS_ANIMATION_CONFIG = {
 	duration: 1000,// Duration of a single animation cycle in milliseconds
 	startX: 400,// Starting X position for each coin 
 	startY: 225,// Starting Y position for each coin 
+	upwardChance : 0.6, // Probability (0 to 1) that a coin will start with upward gravity instead of downward
 	minGravity: -3.0,// Minimum gravity applied to coin movement (negative = upward force)
 	maxGravity: 1.5,// Maximum gravity applied to coin movement (positive = downward force)
 	minSize: 0.25,// Minimum initial size/scale for each coin
@@ -17,7 +18,7 @@ const COINS_ANIMATION_CONFIG = {
 };
 
 class ParticleSystem extends PIXI.Container {
-	constructor(config = {}) {
+	constructor() {
 		super();
 
 		const {
@@ -25,6 +26,7 @@ class ParticleSystem extends PIXI.Container {
 			duration,
 			startX,
 			startY,
+			upwardChance,
 			minGravity,
 			maxGravity,
 			minSize,
@@ -34,7 +36,7 @@ class ParticleSystem extends PIXI.Container {
 			minXVelocity,
 			maxXVelocity,
 			fadeAmount
-		} = { ...COINS_ANIMATION_CONFIG, ...config };
+		} = { ...COINS_ANIMATION_CONFIG };
 
 		this.duration = duration;
 		this.start = 0;
@@ -42,6 +44,7 @@ class ParticleSystem extends PIXI.Container {
 		this.cfg = {
 			startX,
 			startY,
+			upwardChance,
 			minGravity,
 			maxGravity,
 			minSize,
@@ -63,7 +66,7 @@ class ParticleSystem extends PIXI.Container {
 			sp.y = startY;
 			sp.alpha = 0;
 
-			const goUp = Math.random() < 0.4; // 40% chance to go up
+			const goUp = Math.random() < this.cfg.upwardChance; 
 
 			sp.init = {
 				gravity: goUp
@@ -117,7 +120,7 @@ class ParticleSystem extends PIXI.Container {
 		sp.y = cfg.startY;
 		sp.alpha = 0;
 
-		const goUp = Math.random() < 0.4;
+		const goUp = Math.random() < this.cfg.upwardChance;
 
 		sp.init.gravity = goUp
 			? this.minMaxRandom(cfg.minGravity, -1)
@@ -125,6 +128,7 @@ class ParticleSystem extends PIXI.Container {
 
 		sp.init.xVelocity = this.minMaxRandom(cfg.minXVelocity, cfg.maxXVelocity);
 		sp.init.rotation = this.minMaxRandom(cfg.minRotation, cfg.maxRotation);
+		
 	}
 
 	minMaxRandom(min, max) {
