@@ -135,6 +135,7 @@ class ParticleSystem extends PIXI.Container {
 		return Math.random() * (max - min) + min;
 	}
 }
+
 class Game {
 	constructor(props) {
 		this.totalDuration = 0;
