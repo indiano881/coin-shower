@@ -1,19 +1,19 @@
 // ----- Start of the assignment ----- //
 
 const COINS_ANIMATION_CONFIG = {
-	numCoins: 10,
-	duration: 1000,
-	startX: 400,
-	startY: 225,
-	minGravity: -4.5,
-	maxGravity: 4.5,
-	minSize: 0.25,
-	maxSize: 0.5,
-	minRotation: -1.0,
-	maxRotation: 1.0,
-	minXVelocity: -5.5,
-	maxXVelocity: 5.5,
-	fadeAmount: 10
+	numCoins: 20,// Number of coin sprites to create and animate
+	duration: 1000,// Duration of a single animation cycle in milliseconds
+	startX: 400,// Starting X position for each coin 
+	startY: 225,// Starting Y position for each coin 
+	minGravity: -3.0,// Minimum gravity applied to coin movement (negative = upward force)
+	maxGravity: 1.5,// Maximum gravity applied to coin movement (positive = downward force)
+	minSize: 0.25,// Minimum initial size/scale for each coin
+	maxSize: 0.5,// Maximum initial size/scale for each coin
+	minRotation: -1.0,// Minimum initial rotation speed of coins (in radians per frame)
+	maxRotation: 1.0,// Maximum initial rotation speed of coins (in radians per frame)
+	minXVelocity: -7.0,// Minimum horizontal velocity (how far coins move left/right)
+	maxXVelocity: 7.0,// Maximum horizontal velocity
+	fadeAmount: 10// Alpha increment per frame (used for fade-in effect)
 };
 
 class ParticleSystem extends PIXI.Container {
