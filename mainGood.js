@@ -19,7 +19,7 @@ const COINS_ANIMATION_CONFIG = {
 	minXVelocity: -7.0,		// Minimum horizontal velocity (how far coins move left/right)
 	maxXVelocity: 7.0,		// Maximum horizontal velocity
 	fadeAmount: 10,			// Alpha increment per frame (used for fade-in effect)
-	fadeDivider: 100    	// Controls speed of fade-in
+	fadeDivider: 100   		// Controls speed of fade-in (higher = slower fade-in)
 };
 
 class ParticleSystem extends PIXI.Container {
