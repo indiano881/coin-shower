@@ -2,20 +2,24 @@
 
 // Configuration object for the coin animation system
 const COINS_ANIMATION_CONFIG = {
-	numCoins: 20,		// Number of coin sprites to create and animate
-	duration: 1000,		// Duration of a single animation cycle in milliseconds
-	startX: 400,		// Starting X position for each coin 
-	startY: 225,		// Starting Y position for each coin 
-	upwardChance: 0.4, 	// Probability (0 to 1) that a coin will start with upward gravity instead of downward
-	minGravity: -3.0,	// Minimum gravity applied to coin movement (negative = upward force)
-	maxGravity: 1.5,	// Maximum gravity applied to coin movement (positive = downward force)
-	minSize: 0.15,		// Minimum initial size/scale for each coin
-	maxSize: 0.35,		// Maximum initial size/scale for each coin
-	minRotation: -1.0,	// Minimum initial rotation speed of coins (in radians per frame)
-	maxRotation: 1.0,	// Maximum initial rotation speed of coins (in radians per frame)
-	minXVelocity: -7.0,	// Minimum horizontal velocity (how far coins move left/right)
-	maxXVelocity: 7.0,	// Maximum horizontal velocity
-	fadeAmount: 10		// Alpha increment per frame (used for fade-in effect)
+	numCoins: 20,			// Number of coin sprites to create and animate
+	duration: 1000,			// Duration of a single animation cycle in milliseconds
+	startX: 400,			// Starting X position for each coin 
+	startY: 225,			// Starting Y position for each coin 
+	upwardChance: 0.4, 		// Probability (0 to 1) that a coin will start with upward gravity instead of downward
+	minGravity: -3.0,		// Minimum gravity applied to coin movement (negative = upward force)
+	maxGravity: 0.6,		// Maximum gravity applied to coin movement (positive = downward force)
+	gravityAccellerator: 0.07, //Gravity acceleration per frame (added to current gravity each tick)
+	gravityMultiplier: 3.5, // Controls how fast gravity affects movement on Y axis
+	minSize: 0.15,			// Minimum initial size/scale for each coin
+	maxSize: 0.35,			// Maximum initial size/scale for each coin
+	minRotation: -0.4,		// Minimum initial rotation speed of coins (in radians per frame)
+	maxRotation: 0.4,		// Maximum initial rotation speed of coins (in radians per frame)
+	rotationDamping: 25,	// Slows down rotation speed (damping factor)
+	minXVelocity: -7.0,		// Minimum horizontal velocity (how far coins move left/right)
+	maxXVelocity: 7.0,		// Maximum horizontal velocity
+	fadeAmount: 10,			// Alpha increment per frame (used for fade-in effect)
+	fadeDivider: 100    	// Controls speed of fade-in
 };
 
 class ParticleSystem extends PIXI.Container {
@@ -30,13 +34,17 @@ class ParticleSystem extends PIXI.Container {
 			upwardChance,
 			minGravity,
 			maxGravity,
+			gravityAccellerator,
+			gravityMultiplier,
 			minSize,
 			maxSize,
 			minRotation,
 			maxRotation,
+			rotationDamping,
 			minXVelocity,
 			maxXVelocity,
-			fadeAmount
+			fadeAmount,
+			fadeDivider
 		} = { ...COINS_ANIMATION_CONFIG };
 
 		// Set start and duration for this effect in milliseconds
@@ -53,13 +61,17 @@ class ParticleSystem extends PIXI.Container {
 			upwardChance,
 			minGravity,
 			maxGravity,
+			gravityAccellerator,
+			gravityMultiplier,
 			minSize,
 			maxSize,
 			minRotation,
 			maxRotation,
+			rotationDamping,
 			minXVelocity,
 			maxXVelocity,
-			fadeAmount
+			fadeAmount,
+			fadeDivider
 		};
 
 		// Create and initialize each coin
@@ -81,8 +93,8 @@ class ParticleSystem extends PIXI.Container {
 			// Store initial movement and rotation data
 			sp.init = {
 				gravity: goUp
-					? this.minMaxRandom(minGravity, -1)
-					: this.minMaxRandom(1, maxGravity),
+					? this.minMaxRandom(minGravity, 0)
+					: this.minMaxRandom(0, maxGravity),
 				xVelocity: this.minMaxRandom(minXVelocity, maxXVelocity),
 				rotation: this.minMaxRandom(minRotation, maxRotation),
 				scale: sp.scale.x
@@ -99,26 +111,26 @@ class ParticleSystem extends PIXI.Container {
 		const frame = ("000" + Math.floor((gt % this.duration) / this.duration * 9)).slice(-3);
 
 		for (let i = 0; i < this.coins.length; i++) {
-			const sp = this.coins[i];
+			const sp   = this.coins[i];
 			const init = sp.init;
-			const cfg = this.cfg;
+			const cfg  = this.cfg;
 
 			// Update texture frame to simulate coin spinning
 			game.setTexture(sp, "CoinsGold" + frame);
 
 			// Apply fade in
-			sp.alpha += cfg.fadeAmount / 100;
-			sp.alpha = Math.min(sp.alpha, 1);
+			sp.alpha += cfg.fadeAmount / cfg.fadeDivider;
+			sp.alpha  = Math.min(sp.alpha, 1);
 
 			// Apply motion
 			sp.x += init.xVelocity;
-			sp.y += init.gravity * 4;
+			sp.y += init.gravity * cfg.gravityMultiplier;
 
 			// Apply rotation
-			sp.rotation += init.rotation / 25;
+			sp.rotation  += init.rotation / cfg.rotationDamping;
 
 			// Simulate gravity acceleration
-			init.gravity += 0.1;
+			init.gravity += cfg.gravityAccellerator;
 
 			// Reset coins when out of screen
 			if (sp.y > game.renderer.height) {
@@ -130,20 +142,20 @@ class ParticleSystem extends PIXI.Container {
 	// Reset a single coin to its initial state
 	resetParticle(sp) {
 		const cfg = this.cfg;
-		sp.x = cfg.startX;
-		sp.y = cfg.startY;
-		sp.alpha = 0;
+		sp.x      = cfg.startX;
+		sp.y      = cfg.startY;
+		sp.alpha  = 0;
 		
 		// Randomly decide direction (up or down)
 		const goUp = Math.random() < this.cfg.upwardChance;
 
 		// Re-randomize movement data
 		sp.init.gravity = goUp
-			? this.minMaxRandom(cfg.minGravity, -1)
-			: this.minMaxRandom(1, cfg.maxGravity);
+			? this.minMaxRandom(cfg.minGravity, 0)
+			: this.minMaxRandom(0, cfg.maxGravity);
 
 		sp.init.xVelocity = this.minMaxRandom(cfg.minXVelocity, cfg.maxXVelocity);
-		sp.init.rotation = this.minMaxRandom(cfg.minRotation, cfg.maxRotation);
+		sp.init.rotation  = this.minMaxRandom(cfg.minRotation, cfg.maxRotation);
 		
 	}
 
