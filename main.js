@@ -15,7 +15,7 @@ class ParticleSystem extends PIXI.Container {
 		const { numCoins, duration} = {
 			...COINS_ANIMATION_CONFIG
 		};
-		// Set start and duration for this effect in milliseconds
+		
 		this.start    = 0;
 		this.duration = duration;
 
