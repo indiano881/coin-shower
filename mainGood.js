@@ -18,8 +18,7 @@ const COINS_ANIMATION_CONFIG = {
 	rotationDamping: 25,	// Slows down rotation speed (damping factor)
 	minXVelocity: -7.0,		// Minimum horizontal velocity (how far coins move left/right)
 	maxXVelocity: 7.0,		// Maximum horizontal velocity
-	fadeAmount: 10,			// Alpha increment per frame (used for fade-in effect)
-	fadeDivider: 100   		// Controls speed of fade-in (higher = slower fade-in)
+	fadeInSpeed: 0.1   		// Alpha increment per frame (0.0–1.0)
 };
 
 class ParticleSystem extends PIXI.Container {
@@ -43,8 +42,7 @@ class ParticleSystem extends PIXI.Container {
 			rotationDamping,
 			minXVelocity,
 			maxXVelocity,
-			fadeAmount,
-			fadeDivider
+			fadeInSpeed
 		} = { ...COINS_ANIMATION_CONFIG };
 
 		// Set start and duration for this effect in milliseconds
@@ -70,8 +68,7 @@ class ParticleSystem extends PIXI.Container {
 			rotationDamping,
 			minXVelocity,
 			maxXVelocity,
-			fadeAmount,
-			fadeDivider
+			fadeInSpeed
 		};
 
 		// Create and initialize each coin
@@ -119,7 +116,7 @@ class ParticleSystem extends PIXI.Container {
 			game.setTexture(sp, "CoinsGold" + frame);
 
 			// Apply fade in
-			sp.alpha += cfg.fadeAmount / cfg.fadeDivider;
+			sp.alpha += cfg.fadeInSpeed;
 			sp.alpha  = Math.min(sp.alpha, 1);
 
 			// Apply motion
